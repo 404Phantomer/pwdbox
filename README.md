@@ -1,3 +1,5 @@
+📘 [中文文档](./README.zh-CN.md)
+
 # 🔐 pwdbox
 
 **pwdbox** is a secure, cross-platform, offline-first password manager built with [Tauri](https://tauri.app/), [Rust](https://www.rust-lang.org/), and [React](https://react.dev/). It allows you to safely store and manage all your software account credentials entirely on your own device — no cloud, no tracking, no compromise.
