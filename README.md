@@ -24,10 +24,21 @@
 ## 📸 Screenshots
 
 <!-- Replace with actual images once UI is built -->
+<h3 align="center">Login</h3>
 <p align="center">
   <img src="docs/screenshot-login.png" width="400" alt="Login Screen" />
+</p>
+
+<h3 align="center">Add</h3>
+<p align="center">
+  <img src="docs/screenshot-add.png" width="400" alt="Add Screen" />
+</p>
+
+<h3 align="center">Dashboard</h3>
+<p align="center">
   <img src="docs/screenshot-dashboard.png" width="400" alt="Dashboard" />
 </p>
+
 
 ---
 
