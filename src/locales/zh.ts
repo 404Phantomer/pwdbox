@@ -101,6 +101,8 @@ export const zh = {
     updateSuccess: '密码更新成功',
     decryptFailed: '密码解密失败',
     loadFailed: '密码加载失败',
+    copyPassword: '复制密码',
+    copied: '已复制！',
   },
 
   // Export/Import

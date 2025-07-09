@@ -19,6 +19,7 @@ const DashboardPage: React.FC = () => {
   const [selectedPassword, setSelectedPassword] = useState<PasswordEntry | null>(null);
   const [showPassword, setShowPassword] = useState<number | null>(null);
   const [showExportModal, setShowExportModal] = useState(false);
+  const [copiedPasswordId, setCopiedPasswordId] = useState<number | null>(null);
 
   // Load passwords on mount
   useEffect(() => {
@@ -104,6 +105,22 @@ const DashboardPage: React.FC = () => {
       }
     } catch (error) {
       console.error('Failed to load password for editing:', error);
+    }
+  };
+
+  const handleCopyPassword = async (passwordId: number, passwordText: string) => {
+    try {
+      await navigator.clipboard.writeText(passwordText);
+      setCopiedPasswordId(passwordId);
+      
+      // 1.5秒后清除复制状态
+      setTimeout(() => {
+        setCopiedPasswordId(null);
+      }, 1500);
+    } catch (error) {
+      console.error('Failed to copy password:', error);
+      // 如果复制失败，可以显示一个错误提示
+      alert('复制失败，请手动选择密码文本');
     }
   };
 
@@ -232,9 +249,33 @@ const DashboardPage: React.FC = () => {
                     <p className="text-gray-600">{password.account}</p>
                     {showPassword === password.id && selectedPassword?.password && (
                       <div className="mt-2 p-2 bg-gray-100 rounded border">
-                        <p className="text-sm text-gray-700 font-mono">
-                          {selectedPassword.password}
-                        </p>
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm text-gray-700 font-mono flex-1 mr-2">
+                            {selectedPassword.password}
+                          </p>
+                          <button
+                            onClick={() => handleCopyPassword(password.id, selectedPassword.password || '')}
+                            className={`transition-colors p-1 rounded flex items-center space-x-1 ${
+                              copiedPasswordId === password.id 
+                                ? 'text-green-500' 
+                                : 'text-gray-400 hover:text-gray-600'
+                            }`}
+                            title={t('password.copyPassword')}
+                          >
+                            {copiedPasswordId === password.id ? (
+                              <>
+                                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span className="text-xs">{t('password.copied')}</span>
+                              </>
+                            ) : (
+                              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                              </svg>
+                            )}
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>

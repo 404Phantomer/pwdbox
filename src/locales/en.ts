@@ -101,6 +101,8 @@ export const en = {
     updateSuccess: 'Password updated successfully',
     decryptFailed: 'Failed to decrypt password',
     loadFailed: 'Failed to load passwords',
+    copyPassword: 'Copy password',
+    copied: 'Copied!',
   },
 
   // Export/Import
