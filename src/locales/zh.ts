@@ -85,6 +85,7 @@ export const zh = {
   // Password Management
   password: {
     addNew: '添加新密码',
+    edit: '编辑密码',
     software: '软件/网站',
     softwarePlaceholder: '例如：Gmail、GitHub 等',
     account: '账号/用户名',
@@ -120,6 +121,21 @@ export const zh = {
     previewImport: '预览导入',
     confirmImport: '确认导入',
     entriesCount: '将导入 {count} 个条目',
+  },
+
+  // Export
+  export: {
+    title: '导出密码',
+    description: '创建一个加密的备份文件以保存您的密码。',
+    passphrase: '导出密码短语',
+    passphrasePlaceholder: '请输入一个强密码用于加密导出文件',
+    confirmPassphrase: '确认密码短语',
+    confirmPassphrasePlaceholder: '请再次输入密码短语',
+    passphraseRequired: '导出密码短语是必填的',
+    passphrasesMismatch: '密码短语不匹配',
+    success: '导出成功！',
+    failed: '导出失败',
+    savedTo: '文件已保存到',
   },
 
   // Security Questions (predefined)

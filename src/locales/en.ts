@@ -85,6 +85,7 @@ export const en = {
   // Password Management
   password: {
     addNew: 'Add New Password',
+    edit: 'Edit Password',
     software: 'Software/Website',
     softwarePlaceholder: 'e.g., Gmail, GitHub, etc.',
     account: 'Account/Username',
@@ -120,6 +121,21 @@ export const en = {
     previewImport: 'Preview Import',
     confirmImport: 'Confirm Import',
     entriesCount: '{count} entries to import',
+  },
+
+  // Export
+  export: {
+    title: 'Export Passwords',
+    description: 'Create an encrypted backup file to save your passwords.',
+    passphrase: 'Export Passphrase',
+    passphrasePlaceholder: 'Enter a strong passphrase to encrypt the export file',
+    confirmPassphrase: 'Confirm Passphrase',
+    confirmPassphrasePlaceholder: 'Enter the passphrase again',
+    passphraseRequired: 'Export passphrase is required',
+    passphrasesMismatch: 'Passphrases do not match',
+    success: 'Export successful!',
+    failed: 'Export failed',
+    savedTo: 'File saved to',
   },
 
   // Security Questions (predefined)
