@@ -22,10 +22,21 @@
 ## 📸 界面截图
 
 <!-- 构建完成 UI 后替换下面图片路径 -->
+<h3 align="center">登录</h3>
 <p align="center">
-  <img src="docs/screenshot-login.png" width="400" alt="登录界面" />
-  <img src="docs/screenshot-dashboard.png" width="400" alt="密码管理界面" />
+  <img src="docs/screenshot-login.png" width="400" alt="Login Screen" />
 </p>
+
+<h3 align="center">新建</h3>
+<p align="center">
+  <img src="docs/screenshot-add.png" width="400" alt="Add Screen" />
+</p>
+
+<h3 align="center">控制面板</h3>
+<p align="center">
+  <img src="docs/screenshot-dashboard.png" width="400" alt="Dashboard" />
+</p>
+
 
 ---
 ## 🔧 安装方法
