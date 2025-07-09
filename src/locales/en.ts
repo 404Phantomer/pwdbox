@@ -31,6 +31,11 @@ export const en = {
     yes: 'Yes',
     no: 'No',
     close: 'Close',
+    copied: 'Copied',
+    confirmDelete: 'Confirm Delete',
+    deleteFailed: 'Delete Failed',
+    unknownError: 'Unknown Error',
+    networkError: 'Network Error',
   },
 
   // Authentication
@@ -105,6 +110,7 @@ export const en = {
     loadFailed: 'Failed to load passwords',
     copyPassword: 'Copy password',
     copied: 'Copied!',
+    copyFailed: 'Copy failed, please manually select the password text',
   },
 
   // Export/Import
@@ -140,6 +146,9 @@ export const en = {
     success: 'Export successful!',
     failed: 'Export failed',
     savedTo: 'File saved to',
+    copyPath: 'Copy Path',
+    autoClose: 'Modal will close automatically in a few seconds...',
+    completed: 'Export Completed',
   },
 
   // Security Questions (predefined)

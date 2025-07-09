@@ -28,7 +28,7 @@ const useHashRouter = () => {
 
 const AppRouter: React.FC = () => {
   const { state } = useAuth();
-  const { route, navigate } = useHashRouter();
+  const { route } = useHashRouter();
 
   // Show loading screen while initializing
   if (state.loading) {

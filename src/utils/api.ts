@@ -97,10 +97,10 @@ export const exportApi = {
     return await invoke('preview_import', { request });
   },
 
-  async createBackup(exportPassphrase: string, backupDir?: string): Promise<ExportResponse> {
+  async createBackup(exportPassphrase: string, backupPath?: string): Promise<ExportResponse> {
     return await invoke('create_backup', { 
       exportPassphrase, 
-      backupDir: backupDir || null 
+      backupPath: backupPath || null 
     });
   },
 

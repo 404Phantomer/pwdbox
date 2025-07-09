@@ -198,15 +198,16 @@ impl ExportService {
         Ok(preview)
     }
 
-    // Create a backup with a default filename
-    pub fn create_backup(&self, export_passphrase: &str, backup_dir: Option<&str>) -> Result<ExportResponse> {
-        // Create default backup filename with timestamp
-        let timestamp = chrono::Utc::now().format("%Y%m%d_%H%M%S");
-        let filename = format!("pwdbox_backup_{}.enc", timestamp);
-        
-        let backup_path = if let Some(dir) = backup_dir {
-            PathBuf::from(dir).join(filename)
+    // Create a backup with specified path or default filename
+    pub fn create_backup(&self, export_passphrase: &str, backup_path: Option<&str>) -> Result<ExportResponse> {
+        let final_path = if let Some(path) = backup_path {
+            // Use provided path directly
+            PathBuf::from(path)
         } else {
+            // Create default backup filename with timestamp
+            let timestamp = chrono::Utc::now().format("%Y%m%d_%H%M%S");
+            let filename = format!("pwdbox_backup_{}.enc", timestamp);
+            
             // Use a default backup directory
             let home_dir = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
             home_dir.join("PwdBox_Backups").join(filename)
@@ -214,7 +215,7 @@ impl ExportService {
 
         let request = ExportRequest {
             export_passphrase: export_passphrase.to_string(),
-            file_path: backup_path.to_string_lossy().to_string(),
+            file_path: final_path.to_string_lossy().to_string(),
         };
 
         self.export_data(request)

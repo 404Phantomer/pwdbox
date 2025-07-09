@@ -22,12 +22,14 @@
         "minWidth": 800,
         "minHeight": 600,
         "resizable": true,
-        "fullscreen": false
+        "fullscreen": false,
+        "devtools": true
       }
     ]
   },
   "bundle": {
-    "active": false
+    "active": false,
+    "icon": []
   },
   "plugins": {
     "shell": {

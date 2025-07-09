@@ -158,9 +158,9 @@ async fn preview_import(request: ImportRequest, state: State<'_, AppState>) -> R
 }
 
 #[tauri::command]
-async fn create_backup(export_passphrase: String, backup_dir: Option<String>, state: State<'_, AppState>) -> Result<ExportResponse, String> {
+async fn create_backup(export_passphrase: String, backup_path: Option<String>, state: State<'_, AppState>) -> Result<ExportResponse, String> {
     let export_service = state.export_service.lock().map_err(|e| e.to_string())?;
-    export_service.create_backup(&export_passphrase, backup_dir.as_deref()).map_err(|e| e.to_string())
+    export_service.create_backup(&export_passphrase, backup_path.as_deref()).map_err(|e| e.to_string())
 }
 
 #[tauri::command]
@@ -201,6 +201,7 @@ fn main() {
     tauri::Builder::default()
         .manage(app_state)
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
             // User management
             is_app_setup,

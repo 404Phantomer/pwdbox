@@ -31,6 +31,11 @@ export const zh = {
     yes: '是',
     no: '否',
     close: '关闭',
+    copied: '已复制',
+    confirmDelete: '确认删除',
+    deleteFailed: '删除失败',
+    unknownError: '未知错误',
+    networkError: '网络错误',
   },
 
   // Authentication
@@ -105,6 +110,7 @@ export const zh = {
     loadFailed: '密码加载失败',
     copyPassword: '复制密码',
     copied: '已复制！',
+    copyFailed: '复制失败，请手动选择密码文本',
   },
 
   // Export/Import
@@ -140,6 +146,9 @@ export const zh = {
     success: '导出成功！',
     failed: '导出失败',
     savedTo: '文件已保存到',
+    copyPath: '复制路径',
+    autoClose: '弹窗将在几秒后自动关闭...',
+    completed: '导出完成',
   },
 
   // Security Questions (predefined)

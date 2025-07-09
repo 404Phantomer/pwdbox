@@ -53,7 +53,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ className = 
 export const CompactLanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ className = '' }) => {
   const { language, setLanguage, availableLanguages } = useLanguage();
 
-  const currentLanguage = availableLanguages[language];
+  // const currentLanguage = availableLanguages[language];
 
   return (
     <div className={`relative ${className}`}>

@@ -6,6 +6,7 @@ import { passwordApi, exportApi, handleApiCall } from '../utils/api';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import type { PasswordEntry, PasswordFormData } from '../types';
+// import { save } from '@tauri-apps/plugin-dialog';
 
 const DashboardPage: React.FC = () => {
   const { state, logout } = useAuth();
@@ -20,6 +21,7 @@ const DashboardPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState<number | null>(null);
   const [showExportModal, setShowExportModal] = useState(false);
   const [copiedPasswordId, setCopiedPasswordId] = useState<number | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
 
   // Load passwords on mount
   useEffect(() => {
@@ -113,50 +115,49 @@ const DashboardPage: React.FC = () => {
       await navigator.clipboard.writeText(passwordText);
       setCopiedPasswordId(passwordId);
       
-      // 1.5秒后清除复制状态
+      // Clear copy status after 1.5 seconds
       setTimeout(() => {
         setCopiedPasswordId(null);
       }, 1500);
     } catch (error) {
       console.error('Failed to copy password:', error);
-      // 如果复制失败，可以显示一个错误提示
-      alert('复制失败，请手动选择密码文本');
+      // Show error message if copy fails
+      alert(t('password.copyFailed'));
     }
   };
 
-  const handleDeletePassword = async (id: number) => {
-    console.log('Delete button clicked for password ID:', id);
+  const handleDeletePassword = (id: number) => {
+    setDeleteConfirmId(id);
     
-    const confirmed = confirm(t('password.deleteConfirm'));
-    console.log('User confirmed deletion:', confirmed);
-    
-    if (!confirmed) {
-      return;
-    }
+    // Auto cancel confirmation state after 3 seconds
+    setTimeout(() => {
+      setDeleteConfirmId(null);
+    }, 3000);
+  };
 
+  const handleConfirmDelete = async (id: number) => {
     try {
-      console.log('Attempting to delete password...');
       const response = await handleApiCall(() =>
         passwordApi.deletePassword({ id })
       );
-
-      console.log('Delete response:', response);
       
       if (response.success) {
-        console.log('Password deleted successfully, reloading passwords...');
         await loadPasswords();
+        setDeleteConfirmId(null);
       } else {
-        console.error('Delete failed with message:', response.message);
-        alert(`删除失败: ${response.message}`);
+        alert(`${t('common.deleteFailed')}: ${response.message}`);
       }
     } catch (error) {
-      console.error('Failed to delete password:', error);
-      alert(`删除失败: ${error instanceof Error ? error.message : '未知错误'}`);
+      alert(`${t('common.deleteFailed')}: ${error instanceof Error ? error.message : t('common.unknownError')}`);
     }
   };
 
+
+
   return (
     <div className="min-h-screen bg-gray-50">
+
+      
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -240,7 +241,10 @@ const DashboardPage: React.FC = () => {
             </div>
           ) : (
             passwords.map((password) => (
-              <div key={password.id} className="password-item">
+              <div 
+                key={password.id} 
+                className="password-item"
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <h3 className="text-lg font-medium text-gray-900">
@@ -306,13 +310,23 @@ const DashboardPage: React.FC = () => {
                     >
                       {t('common.edit')}
                     </Button>
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      onClick={() => handleDeletePassword(password.id)}
-                    >
-                      {t('common.delete')}
-                    </Button>
+                    {deleteConfirmId === password.id ? (
+                      <button
+                        className="px-3 py-1.5 text-sm bg-red-700 text-white hover:bg-red-800 rounded-lg animate-pulse"
+                        onClick={() => handleConfirmDelete(password.id)}
+                        title={t('common.confirmDelete')}
+                      >
+                        {t('common.confirmDelete')}
+                      </button>
+                    ) : (
+                      <button
+                        className="px-3 py-1.5 text-sm bg-red-600 text-white hover:bg-red-700 rounded-lg"
+                        onClick={() => handleDeletePassword(password.id)}
+                        title={t('common.delete')}
+                      >
+                        {t('common.delete')}
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -633,12 +647,12 @@ const EditPasswordModal: React.FC<EditPasswordModalProps> = ({
                 onClick={() => setShowPasswordField(!showPasswordField)}
               >
                 {showPasswordField ? (
-                  // 隐藏密码图标 (眼睛关闭)
+                  // Hide password icon (eye closed)
                   <svg className="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 11-4.243-4.243m4.243 4.243L9.88 9.88" />
                   </svg>
                 ) : (
-                  // 显示密码图标 (眼睛睁开)
+                  // Show password icon (eye open)
                   <svg className="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -688,13 +702,15 @@ interface ExportModalProps {
   masterKey: string;
 }
 
-const ExportModal: React.FC<ExportModalProps> = ({ onClose, masterKey }) => {
+const ExportModal: React.FC<ExportModalProps> = ({ onClose }) => {
   const { t } = useTranslation();
   const [exportPassphrase, setExportPassphrase] = useState('');
   const [confirmPassphrase, setConfirmPassphrase] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [exportPath, setExportPath] = useState('');
+  // const [exportPath, setExportPath] = useState('');
   const [errors, setErrors] = useState<{ passphrase?: string; confirm?: string }>({});
+  const [successMessage, setSuccessMessage] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const handleExport = async () => {
     // Validate inputs
@@ -712,23 +728,41 @@ const ExportModal: React.FC<ExportModalProps> = ({ onClose, masterKey }) => {
     }
 
     setIsLoading(true);
+    setErrors({}); // Clear previous errors
+    
     try {
+      console.log('Starting export...');
+      
+      // Call backend API to create backup
       const response = await handleApiCall(() =>
         exportApi.createBackup(exportPassphrase)
       );
 
-      if (response.success && response.file_path) {
-        setExportPath(response.file_path);
-        alert(`${t('export.success')}\n${t('export.savedTo')}: ${response.file_path}`);
-        onClose();
+      console.log('Export response:', response);
+
+      if (response.success) {
+        const filePath = response.file_path || 'Unknown location';
+        console.log('Export successful, file path:', filePath);
+        
+        // Show success message
+        setSuccessMessage(filePath);
+        setErrors({}); // Clear error messages
+        
+        // Auto close modal after 5 seconds
+        setTimeout(() => {
+          onClose();
+        }, 5000);
       } else {
-        setErrors({ passphrase: response.message || t('export.failed') });
+        console.log('Export failed:', response.message);
+        setErrors({ passphrase: `❌ ${t('export.failed')}: ${response.message || t('common.unknownError')}` });
+        setSuccessMessage(''); // Clear success message
       }
     } catch (error) {
-      console.error('Export failed:', error);
+      console.error('Export exception:', error);
       setErrors({ 
-        passphrase: error instanceof Error ? error.message : t('export.failed')
+        passphrase: `❌ ${t('export.failed')}: ${error instanceof Error ? error.message : t('common.networkError')}`
       });
+      setSuccessMessage(''); // Clear success message
     } finally {
       setIsLoading(false);
     }
@@ -774,6 +808,51 @@ const ExportModal: React.FC<ExportModalProps> = ({ onClose, masterKey }) => {
             required
           />
 
+          {/* Success message area */}
+          {successMessage && (
+            <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-sm font-medium text-green-800">
+                    {t('export.success')}
+                  </h3>
+                  <div className="mt-2">
+                    <p className="text-sm text-green-700">
+                      {t('export.savedTo')}:
+                    </p>
+                    <div className="mt-1 p-2 bg-green-100 rounded border text-xs font-mono text-green-800 break-all">
+                      {successMessage}
+                    </div>
+                    <div className="mt-2 flex space-x-2">
+                      <button
+                        onClick={async () => {
+                          try {
+                            await navigator.clipboard.writeText(successMessage);
+                            setCopied(true);
+                            setTimeout(() => setCopied(false), 2000);
+                          } catch (err) {
+                            console.error('Copy failed:', err);
+                          }
+                        }}
+                        className="text-xs text-green-600 hover:text-green-800 underline"
+                      >
+                        {copied ? `✓ ${t('common.copied')}` : t('export.copyPath')}
+                      </button>
+                    </div>
+                  </div>
+                  <p className="mt-2 text-xs text-green-600">
+                    {t('export.autoClose')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="flex space-x-4 pt-4">
             <Button
               type="button"
@@ -786,9 +865,10 @@ const ExportModal: React.FC<ExportModalProps> = ({ onClose, masterKey }) => {
             <Button
               onClick={handleExport}
               loading={isLoading}
+              disabled={isLoading || !!successMessage}
               className="flex-1"
             >
-              {t('common.export')}
+              {successMessage ? t('export.completed') : t('common.export')}
             </Button>
           </div>
         </div>
