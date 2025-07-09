@@ -92,6 +92,8 @@ export const en = {
     accountPlaceholder: 'e.g., your.email@example.com',
     password: 'Password',
     passwordPlaceholder: 'Enter the password',
+    notes: 'Notes',
+    notesPlaceholder: 'Optional: Add some notes...',
     softwareRequired: 'Software name is required',
     accountRequired: 'Account is required',
     passwordRequired: 'Password is required',

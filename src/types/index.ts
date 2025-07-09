@@ -42,6 +42,7 @@ export interface AddPasswordRequest {
   account: string;
   password: string;
   master_key: string;
+  notes?: string;
 }
 
 export interface UpdatePasswordRequest {
@@ -50,6 +51,7 @@ export interface UpdatePasswordRequest {
   account: string;
   password: string;
   master_key: string;
+  notes?: string;
 }
 
 export interface DeletePasswordRequest {
@@ -71,6 +73,7 @@ export interface PasswordEntry {
   software: string;
   account: string;
   password?: string;
+  notes?: string;
   created_at?: string;
 }
 
@@ -139,6 +142,7 @@ export interface PasswordFormData {
   software: string;
   account: string;
   password: string;
+  notes?: string;
   confirmPassword?: string;
 }
 

@@ -92,6 +92,8 @@ export const zh = {
     accountPlaceholder: '例如：your.email@example.com',
     password: '密码',
     passwordPlaceholder: '请输入密码',
+    notes: '备注',
+    notesPlaceholder: '可选：添加一些备注信息...',
     softwareRequired: '软件名称是必填的',
     accountRequired: '账号是必填的',
     passwordRequired: '密码是必填的',

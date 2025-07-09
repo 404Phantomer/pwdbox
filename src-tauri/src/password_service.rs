@@ -9,6 +9,7 @@ pub struct AddPasswordRequest {
     pub software: String,
     pub account: String,
     pub password: String,
+    pub notes: Option<String>,
     pub master_key: String, // Base64 encoded master key
 }
 
@@ -18,6 +19,7 @@ pub struct UpdatePasswordRequest {
     pub software: String,
     pub account: String,
     pub password: String,
+    pub notes: Option<String>,
     pub master_key: String, // Base64 encoded master key
 }
 
@@ -44,6 +46,7 @@ pub struct PasswordEntryResponse {
     pub software: String,
     pub account: String,
     pub password: Option<String>, // Only included when specifically requested and decrypted
+    pub notes: Option<String>,
     pub created_at: Option<String>, // Could be added later
 }
 
@@ -89,6 +92,7 @@ impl PasswordService {
             account: request.account,
             encrypted_password,
             nonce,
+            notes: request.notes,
         };
 
         // Save to database
@@ -116,6 +120,7 @@ impl PasswordService {
                 software: entry.software,
                 account: entry.account,
                 password: None, // Don't include encrypted password in list view
+                notes: entry.notes,
                 created_at: None,
             })
             .collect();
@@ -148,9 +153,10 @@ impl PasswordService {
 
         let response_entry = PasswordEntryResponse {
             id: entry.id.unwrap_or(0),
-            software: entry.software,
-            account: entry.account,
+            software: entry.software.clone(),
+            account: entry.account.clone(),
             password: Some(decrypted_password),
+            notes: entry.notes.clone(),
             created_at: None,
         };
 
@@ -186,6 +192,7 @@ impl PasswordService {
             account: request.account,
             encrypted_password,
             nonce,
+            notes: request.notes,
         };
 
         // Update in database
@@ -231,6 +238,7 @@ impl PasswordService {
                 software: entry.software,
                 account: entry.account,
                 password: None, // Don't include password in search results
+                notes: entry.notes,
                 created_at: None,
             })
             .collect();
@@ -299,6 +307,7 @@ impl PasswordService {
                 account: entry.account,
                 encrypted_password: new_encrypted_password,
                 nonce: new_nonce,
+                notes: entry.notes,
             };
 
             self.database.update_password_entry(&updated_entry)?;

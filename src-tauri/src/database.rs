@@ -26,6 +26,7 @@ pub struct PasswordEntry {
     pub account: String,
     pub encrypted_password: String,
     pub nonce: String,
+    pub notes: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -73,10 +74,17 @@ impl Database {
                 software TEXT NOT NULL,
                 account TEXT NOT NULL,
                 encrypted_password TEXT NOT NULL,
-                nonce TEXT NOT NULL
+                nonce TEXT NOT NULL,
+                notes TEXT
             )",
             [],
         )?;
+
+        // Add notes column if it doesn't exist (for migration)
+        let _ = self.connection.execute(
+            "ALTER TABLE password_entries ADD COLUMN notes TEXT",
+            [],
+        );
 
         Ok(())
     }
@@ -148,16 +156,16 @@ impl Database {
     // Password Entry operations
     pub fn insert_password_entry(&self, entry: &PasswordEntry) -> Result<i64> {
         self.connection.execute(
-            "INSERT INTO password_entries (software, account, encrypted_password, nonce)
-             VALUES (?1, ?2, ?3, ?4)",
-            params![entry.software, entry.account, entry.encrypted_password, entry.nonce],
+            "INSERT INTO password_entries (software, account, encrypted_password, nonce, notes)
+             VALUES (?1, ?2, ?3, ?4, ?5)",
+            params![entry.software, entry.account, entry.encrypted_password, entry.nonce, entry.notes],
         )?;
         Ok(self.connection.last_insert_rowid())
     }
 
     pub fn get_all_password_entries(&self) -> Result<Vec<PasswordEntry>> {
         let mut stmt = self.connection.prepare(
-            "SELECT id, software, account, encrypted_password, nonce FROM password_entries"
+            "SELECT id, software, account, encrypted_password, nonce, notes FROM password_entries"
         )?;
 
         let entry_iter = stmt.query_map([], |row| {
@@ -167,6 +175,7 @@ impl Database {
                 account: row.get(2)?,
                 encrypted_password: row.get(3)?,
                 nonce: row.get(4)?,
+                notes: row.get(5)?,
             })
         })?;
 
@@ -180,8 +189,8 @@ impl Database {
     pub fn update_password_entry(&self, entry: &PasswordEntry) -> Result<()> {
         if let Some(id) = entry.id {
             self.connection.execute(
-                "UPDATE password_entries SET software = ?1, account = ?2, encrypted_password = ?3, nonce = ?4 WHERE id = ?5",
-                params![entry.software, entry.account, entry.encrypted_password, entry.nonce, id],
+                "UPDATE password_entries SET software = ?1, account = ?2, encrypted_password = ?3, nonce = ?4, notes = ?5 WHERE id = ?6",
+                params![entry.software, entry.account, entry.encrypted_password, entry.nonce, entry.notes, id],
             )?;
         } else {
             return Err(anyhow!("Password entry ID is required for update"));
@@ -196,9 +205,9 @@ impl Database {
 
     pub fn search_password_entries(&self, query: &str) -> Result<Vec<PasswordEntry>> {
         let mut stmt = self.connection.prepare(
-            "SELECT id, software, account, encrypted_password, nonce 
+            "SELECT id, software, account, encrypted_password, nonce, notes 
              FROM password_entries 
-             WHERE software LIKE ?1 OR account LIKE ?1"
+             WHERE software LIKE ?1 OR account LIKE ?1 OR notes LIKE ?1"
         )?;
 
         let search_pattern = format!("%{}%", query);
@@ -209,6 +218,7 @@ impl Database {
                 account: row.get(2)?,
                 encrypted_password: row.get(3)?,
                 nonce: row.get(4)?,
+                notes: row.get(5)?,
             })
         })?;
 
@@ -266,9 +276,9 @@ impl Database {
         // Insert password entries
         for entry in &data.password_entries {
             tx.execute(
-                "INSERT INTO password_entries (software, account, encrypted_password, nonce)
-                 VALUES (?1, ?2, ?3, ?4)",
-                params![entry.software, entry.account, entry.encrypted_password, entry.nonce],
+                "INSERT INTO password_entries (software, account, encrypted_password, nonce, notes)
+                 VALUES (?1, ?2, ?3, ?4, ?5)",
+                params![entry.software, entry.account, entry.encrypted_password, entry.nonce, entry.notes],
             )?;
         }
 

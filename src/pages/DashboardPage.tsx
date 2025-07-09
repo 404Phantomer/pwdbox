@@ -247,6 +247,11 @@ const DashboardPage: React.FC = () => {
                       {password.software}
                     </h3>
                     <p className="text-gray-600">{password.account}</p>
+                    {password.notes && (
+                      <p className="text-sm text-gray-500 mt-1">
+                        <span className="font-medium">{t('password.notes')}:</span> {password.notes}
+                      </p>
+                    )}
                     {showPassword === password.id && selectedPassword?.password && (
                       <div className="mt-2 p-2 bg-gray-100 rounded border">
                         <div className="flex items-center justify-between">
@@ -373,6 +378,7 @@ const AddPasswordModal: React.FC<AddPasswordModalProps> = ({
     software: '',
     account: '',
     password: '',
+    notes: '',
   });
   const [errors, setErrors] = useState<Partial<PasswordFormData>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -412,6 +418,7 @@ const AddPasswordModal: React.FC<AddPasswordModalProps> = ({
           software: formData.software,
           account: formData.account,
           password: formData.password,
+          notes: formData.notes,
           master_key: masterKey,
         })
       );
@@ -468,6 +475,14 @@ const AddPasswordModal: React.FC<AddPasswordModalProps> = ({
             required
           />
 
+          <Input
+            label={t('password.notes')}
+            name="notes"
+            value={formData.notes || ''}
+            onChange={handleInputChange}
+            placeholder={t('password.notesPlaceholder')}
+          />
+
           <div className="flex space-x-4 pt-4">
             <Button
               type="button"
@@ -510,6 +525,7 @@ const EditPasswordModal: React.FC<EditPasswordModalProps> = ({
     software: password.software,
     account: password.account,
     password: password.password || '',
+    notes: password.notes || '',
   });
   const [errors, setErrors] = useState<Partial<PasswordFormData>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -551,6 +567,7 @@ const EditPasswordModal: React.FC<EditPasswordModalProps> = ({
           software: formData.software,
           account: formData.account,
           password: formData.password,
+          notes: formData.notes,
           master_key: masterKey,
         })
       );
@@ -633,6 +650,14 @@ const EditPasswordModal: React.FC<EditPasswordModalProps> = ({
               <p className="text-sm text-red-600">{errors.password}</p>
             )}
           </div>
+
+          <Input
+            label={t('password.notes')}
+            name="notes"
+            value={formData.notes || ''}
+            onChange={handleInputChange}
+            placeholder={t('password.notesPlaceholder')}
+          />
 
           <div className="flex space-x-4 pt-4">
             <Button
