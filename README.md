@@ -95,11 +95,11 @@ pnpm tauri dev
 ---
 ## 🛣️ Roadmap
 
-- [ ] SQLite-based secure local storage  
-- [ ] Master password protection  
-- [ ] Recovery via security questions  
-- [ ] Cross-platform Tauri support  
-- [ ] Export/Import with encryption  
+- [x] SQLite-based secure local storage  
+- [x] Master password protection  
+- [x] Recovery via security questions  
+- [x] Cross-platform Tauri support  
+- [x] Export/Import with encryption  
 - [ ] Mobile UI optimizations  
 - [ ] Biometric unlock (TouchID / FaceID)  
 - [ ] Cloud sync (optional, encrypted)
